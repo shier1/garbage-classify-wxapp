@@ -36,7 +36,7 @@ def center_crop(image, size=(224, 224)):
     return image[i:i + th, j:j + tw, :]
 
 
-def predict_video(model_dir="app/static_model/static_model", frame, image_size=224, scale=0.875):
+def predict_image(model_dir="app/static_model/static_model", frame, image_size=224, scale=0.875):
     scale_size = int(math.floor(image_size/scale))
     image_data = cv2.resize(frame, dsize=(scale_size, scale_size))
     image_data = center_crop(image_data, size=(224, 224))
@@ -51,5 +51,4 @@ def predict_video(model_dir="app/static_model/static_model", frame, image_size=2
     output_data = output_tensor.numpy()
     label = output_data.argmax()
     prob = output_data[0][label]
-    cv2.putText(frame, label_lists[label], (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 255, 0), 2)
-    return frame,  label_lists[label]
+    return label_lists[label]
