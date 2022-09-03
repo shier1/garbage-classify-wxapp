@@ -65,7 +65,7 @@ import cv2
 
 app = Flask(__name__)
 
-@route("/")
+@app.route("/")
 def index():
     return "hello world"
 
