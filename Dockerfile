@@ -1,5 +1,6 @@
 FROM tiangolo/uwsgi-nginx-flask:python3.8
-RUN yum install mesa-libGL-devel mesa-libGLU-devel
+RUN apt-get update
+RUN apt-get install ffmpeg libsm6 libxext6  -y
 
 COPY ./app /app
 RUN pip install opencv-python
