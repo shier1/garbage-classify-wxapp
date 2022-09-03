@@ -1,9 +1,9 @@
-from flask import Flask,Response, jsonify
-import threading
+import os
 import cv2
 import base64
-from app.apply import predict_image
-
+import numpy as np
+from apply import predict_image
+from flask import Flask,Response, jsonify, request
 
 app = Flask(__name__)
 
@@ -19,7 +19,9 @@ def predict():
     res_label = predict_image(img)
     return jsonify({"result":res_label})
 
-
+# @app.route('/')
+# def index():
+#     return "hello world"
 
 if __name__ == '__main__':
     allowed_ip_addr = "0.0.0.0"

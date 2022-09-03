@@ -1,4 +1,5 @@
 import paddle
+import paddle.jit
 import cv2
 import numpy as np
 import math
@@ -36,7 +37,8 @@ def center_crop(image, size=(224, 224)):
     return image[i:i + th, j:j + tw, :]
 
 
-def predict_image(model_dir="app/static_model/static_model", frame, image_size=224, scale=0.875):
+def predict_image(frame, model_dir="app/static_model/static_model", image_size=224, scale=0.875):
+    model = paddle.jit.load(model_dir)
     scale_size = int(math.floor(image_size/scale))
     image_data = cv2.resize(frame, dsize=(scale_size, scale_size))
     image_data = center_crop(image_data, size=(224, 224))
