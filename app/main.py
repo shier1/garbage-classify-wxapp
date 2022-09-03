@@ -56,7 +56,7 @@ def video_play():
 
 if __name__ == '__main__':
     allowed_ip_addr = "0.0.0.0"
-    access_port = "8080"
+    access_port = int(os.environ.get('PORT', 80))
  
     t = threading.Thread(target=detect_motion, args=(24,))
     t.daemon = True
