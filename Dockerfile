@@ -1,6 +1,6 @@
 FROM tiangolo/uwsgi-nginx-flask:python3.8
-RUN apt-get update
-RUN apt-get install ffmpeg libsm6 libxext6  -y
+RUN sed -i 's#http://archive.ubuntu.com/#http://mirrors.tuna.tsinghua.edu.cn/#' /etc/apt/sources.list;
+RUN apt-get update && apt-get install -y ffmpeg libsm6 libxext6  
 
 COPY ./app /app
 RUN pip install opencv-python
