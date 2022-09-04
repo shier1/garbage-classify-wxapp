@@ -13,7 +13,7 @@ def predict():
     img_data_base64 = request.form.get('img_data')
     img_data = base64.b64decode(img_data_base64) 
     nparr = np.fromstring(img_data,np.uint8)
-    img = cv2.imdecode(nparr,cv2.COLOR_BGR2RGB)
+    img = cv2.imdecode(nparr,cv2.COLOR_RGB2BGR)
     res_label = predict_image(img)
     return jsonify({"result":res_label})
 
