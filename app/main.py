@@ -5,7 +5,7 @@ import numpy as np
 from io import BytesIO
 from PIL import Image
 from apply import predict_image
-from flask import Flask, jsonify, request, make_response, abort, Response
+from flask import Flask, jsonify, request, abort
 
 app = Flask(__name__)
 
@@ -18,16 +18,13 @@ def predict():
     img_data = BytesIO(byte_data)
     img_data = Image.open(img_data)
     img = cv2.cvtColor(np.asarray(img_data), cv2.COLOR_RGB2BGR)
+    print(img.shape)
     try:
         res_label = predict_image(img)
     except:
         abort(404)
     else:
-        resp = make_response()
-        resp.status_code = 200
-        resp.data = jsonify({"result": res_label})
-        resp.headers["content-type"] = "text/html"
-        return resp
+        return jsonify({"result": res_label})
 
 
 @app.route('/')
@@ -38,7 +35,7 @@ def index():
 @app.route('/test_api', methods=['POST'])
 def test_api():
     test_name = request.form.get('name')
-    return Response(jsonify({"name": test_name}), status="200", content_type="text/html")
+    return jsonify({"name": test_name})
 
 
 if __name__ == '__main__':
