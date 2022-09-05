@@ -12,8 +12,7 @@ app = Flask(__name__)
 
 @app.route('/predict',  methods=['POST'])
 def predict():
-    img_data_base64 = request.form.get('img_data')
-    print(img_data_base64)
+    img_data_base64 = request.args.get('img_data')
     byte_data = base64.b64decode(img_data_base64)
     # deal the base64 datas lossed the image shape
     img_data = BytesIO(byte_data)
@@ -35,7 +34,7 @@ def index():
 
 @app.route('/test_api', methods=['POST'])
 def test_api():
-    test_name = request.form.get('name')
+    test_name = request.args.get('name')
     return jsonify({"name": test_name})
 
 

@@ -9,3 +9,18 @@ data = {
 
 res = requests.post(url, data=data)
 print(res.json())
+
+
+wx.cloud.callContainer({
+  "config": {
+    "env": "prod-9gp90qwgab0550cc"
+  },
+  "path": "/api/count",
+  "header": {
+    "X-WX-SERVICE": "garbage-classify"
+  },
+  "method": "POST",
+  "data": {
+    "action": "inc"
+  }
+})
