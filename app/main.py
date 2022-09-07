@@ -13,6 +13,7 @@ app = Flask(__name__)
 @app.route('/predict',  methods=['POST'])
 def predict():
     img_data_base64 = request.args.get('data')
+    print(img_data_base64)
     byte_data = base64.b64decode(img_data_base64)
     # deal the base64 datas lossed the image shape
     img_data = BytesIO(byte_data)
