@@ -12,13 +12,12 @@ app = Flask(__name__)
 
 @app.route('/predict',  methods=['POST'])
 def predict():
-    img_data_base64 = request.args.get('img_data')
+    img_data_base64 = request.args.get('data')
     byte_data = base64.b64decode(img_data_base64)
     # deal the base64 datas lossed the image shape
     img_data = BytesIO(byte_data)
     img_data = Image.open(img_data)
     img = cv2.cvtColor(np.asarray(img_data), cv2.COLOR_RGB2BGR)
-    print(img.shape)
     try:
         res_label = predict_image(img)
     except:
