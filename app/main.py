@@ -5,15 +5,17 @@ import numpy as np
 from io import BytesIO
 from PIL import Image
 from apply import predict_image
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, Response
 
 app = Flask(__name__)
 
 
 @app.route('/predict',  methods=['POST'])
 def predict():
-    img_data_base64 = request.args.get('img_data')
-    print(img_data_base64)
+    # img_data_base64 = request.args.get('img_data')
+    params = request.get_json()
+    print(params)
+    img_data_base64 = params['img_data']
     byte_data = base64.b64decode(img_data_base64)
     # deal the base64 datas lossed the image shape
     img_data = BytesIO(byte_data)
@@ -24,7 +26,7 @@ def predict():
     except:
         abort(404)
     else:
-        return jsonify({"result": res_label})
+        return Response(jsonify({"result": res_label}), mimetype='application/json')
 
 
 @app.route('/')
