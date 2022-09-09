@@ -2,10 +2,11 @@ import os
 import cv2
 import base64
 import numpy as np
+import requests
 from io import BytesIO
 from PIL import Image
 from apply import predict_image
-from flask import Flask, jsonify, request, abort, Response
+from flask import Flask, jsonify, abort, Response, request
 
 app = Flask(__name__)
 
@@ -26,7 +27,24 @@ def predict():
     else:
         return jsonify({"result": res_label})
 
-
+    
+@app.route('/mobilenetv2_cbam',  methods=['POST'])
+def predict():
+    params = request.get_json()
+    img_url = params['img_url']
+    img_bytes = requests.get(url=img_url)
+    
+    # deal the base64 datas lossed the image shape
+    img_data = BytesIO(img_bytes.content)
+    img_data = Image.open(img_data)
+    img = cv2.cvtColor(np.asarray(img_data), cv2.COLOR_RGB2BGR)
+    try:
+        res_label = predict_image(img)
+    except:
+        abort(404)
+    else:
+        return jsonify({"result": res_label})
+    
 @app.route('/')
 def index():
     return "hello world"
