@@ -29,15 +29,17 @@ def predict():
 
     
 @app.route('/mobilenetv2_cbam',  methods=['POST'])
-def predict():
+def mobilenetv2_cbam():
     params = request.get_json()
     img_url = params['img_url']
+    print(img_url)
     img_bytes = requests.get(url=img_url)
     
     # deal the base64 datas lossed the image shape
     img_data = BytesIO(img_bytes.content)
     img_data = Image.open(img_data)
     img = cv2.cvtColor(np.asarray(img_data), cv2.COLOR_RGB2BGR)
+    print(img.shape)
     try:
         res_label = predict_image(img)
     except:
