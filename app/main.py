@@ -1,3 +1,4 @@
+from crypt import methods
 import os
 import cv2
 import base64
@@ -6,9 +7,48 @@ import requests
 from io import BytesIO
 from PIL import Image
 from apply import predict_image
+from sql import query_exist_user_account, add_user_info, get_db, add_wx_login
 from flask import Flask, jsonify, abort, Response, request
 
 app = Flask(__name__)
+db = get_db()
+
+
+@app.route('/user_login', methods=['POST'])
+def user_login():
+    global db
+    params = request.get_data()
+    user_account = params['userAccount']
+    user_passwd = params['userPassword']
+    exist_account = query_exist_user_account(db, account=user_account)
+    if exist_account is None:
+        return jsonify({"accountNotExist": True, "passwordError": False, "loginSuccess": False})
+    elif exist_account[1] == user_passwd:
+        return jsonify({"accountNotExist": False, "passwordError": False, "loginSuccess": True})
+    else:
+        return jsonify({"accountNotExist": False, "passwordError": True, "loginSuccess": False})
+
+@app.route('/user_registry', methods=['POST'])
+def user_registry():
+    global db
+    params = request.get_data()
+    user_account = params['userAccount']
+    user_passwd = params['userPassword']
+    exist_account = query_exist_user_account(db, account=user_account)
+    if exist_account is not None:
+        return jsonify({"accountExist": True, "registSuccess": False})
+    else:
+        add_user_info(db, account=user_account, password=user_passwd)
+        return jsonify({"accountExist": False, "registSuccess": True})
+
+
+@app.route('/wx_login', methods=['POST'])
+def wx_login():
+    global db
+    params = request.get_data()
+    openid = params['openid']
+    add_wx_login(db, openid)
+    return jsonify({"wxLoginSuccess":True})
 
 
 @app.route('/predict',  methods=['POST'])
@@ -49,7 +89,8 @@ def mobilenetv2_cbam():
     
 @app.route('/')
 def index():
-    return "hello world"
+    return "智能垃圾分类箱"
+
 
 
 @app.route('/test_api', methods=['POST'])
