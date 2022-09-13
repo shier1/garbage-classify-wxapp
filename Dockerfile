@@ -1,5 +1,5 @@
 FROM tiangolo/uwsgi-nginx-flask:python3.8
-RUN sed -i 's#http://archive.ubuntu.com/#http://mirrors.tuna.tsinghua.edu.cn/#' /etc/apt/sources.list;
+RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 RUN apt-get update && apt-get install -y ffmpeg libsm6 libxext6  
 
 COPY ./app /app
