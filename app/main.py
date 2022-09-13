@@ -17,7 +17,7 @@ db = get_db()
 @app.route('/user_login', methods=['POST'])
 def user_login():
     global db
-    params = request.get_data()
+    params = request.get_json()
     user_account = params['userAccount']
     user_passwd = params['userPassword']
     exist_account = query_exist_user_account(db, account=user_account)
@@ -31,7 +31,7 @@ def user_login():
 @app.route('/user_registry', methods=['POST'])
 def user_registry():
     global db
-    params = request.get_data()
+    params = request.get_json()
     user_account = params['userAccount']
     user_passwd = params['userPassword']
     exist_account = query_exist_user_account(db, account=user_account)
@@ -45,7 +45,7 @@ def user_registry():
 @app.route('/wx_login', methods=['POST'])
 def wx_login():
     global db
-    params = request.get_data()
+    params = request.get_json()
     openid = params['openid']
     add_wx_login(db, openid)
     return jsonify({"wxLoginSuccess":True})
