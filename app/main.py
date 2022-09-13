@@ -20,6 +20,8 @@ def user_login():
     params = request.get_json()
     user_account = params['userAccount']
     user_passwd = params['userPassword']
+    print(params)
+    print(db)
     exist_account = query_exist_user_account(db, account=user_account)
     if exist_account is None:
         return jsonify({"accountNotExist": True, "passwordError": False, "loginSuccess": False})
