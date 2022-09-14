@@ -11,12 +11,11 @@ from sql import query_exist_user_account, add_user_info, get_db, add_wx_login
 from flask import Flask, jsonify, abort, Response, request
 
 app = Flask(__name__)
-db = get_db()
 
 
 @app.route('/user_login', methods=['POST'])
 def user_login():
-    global db
+    db = get_db()
     params = request.get_json()
     user_account = params['userAccount']
     user_passwd = params['userPassword']
@@ -32,7 +31,7 @@ def user_login():
 
 @app.route('/user_registry', methods=['POST'])
 def user_registry():
-    global db
+    db = get_db()
     params = request.get_json()
     user_account = params['userAccount']
     user_passwd = params['userPassword']
@@ -46,7 +45,7 @@ def user_registry():
 
 @app.route('/wx_login', methods=['POST'])
 def wx_login():
-    global db
+    db = get_db()
     params = request.get_json()
     openid = params['openid']
     add_wx_login(db, openid)
