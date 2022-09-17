@@ -12,12 +12,17 @@ from flask import Flask, jsonify, abort, Response, request
 app = Flask(__name__)
 
 
-@app.route('/check_device_run', methods=["POST"])
-def check_device_run():
-    params = request.get_json()
-    device_url = params['deviceUrl']
-    res = requests.post(device_url)
-    return res
+
+
+# @app.route('/check_device_run', methods=["POST"])
+# def check_device_run():
+#     """
+#     检测设备是否运行端口，可以选择去除，内容与下方无异
+#     """
+#     params = request.get_json()
+#     device_url = params['deviceUrl']
+#     res = requests.post(device_url)
+#     return res
 
 
 @app.route('/get_device_info', methods=["POST"])
