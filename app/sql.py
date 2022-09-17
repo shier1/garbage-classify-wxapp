@@ -42,7 +42,7 @@ def query_device_url_account(db:pymysql.connections.Connection, account:str):
         res = cursor.fetchall()
         return res
 
-def add_devie_url(db:pymysql.connections.Connection, device_url:str, account:str=NULL, openid:str=NULL):
+def add_devie_url(db:pymysql.connections.Connection, device_url:str, account:str, openid:str):
     with db.cursor() as cursor:
         cursor.execute("select * from deviceInfo where openid=%s", (device_url))
         res = cursor.fetchall()
