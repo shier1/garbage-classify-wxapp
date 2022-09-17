@@ -1,4 +1,3 @@
-from crypt import methods
 import os
 import cv2
 import base64
@@ -12,6 +11,21 @@ from flask import Flask, jsonify, abort, Response, request
 
 app = Flask(__name__)
 
+
+@app.route('/check_device_run', methods=["POST"])
+def check_device_run():
+    params = request.get_json()
+    device_url = params['deviceUrl']
+    res = requests.post(device_url)
+    return res
+
+
+@app.route('/get_device_info', methods=["POST"])
+def get_device_info():
+    params = request.get_json()
+    device_url = params['deviceUrl']
+    res = requests.post(device_url)
+    return res
 
 @app.route('/user_login', methods=['POST'])
 def user_login():
