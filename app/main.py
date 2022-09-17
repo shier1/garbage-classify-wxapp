@@ -30,7 +30,7 @@ def get_device_info():
     params = request.get_json()
     device_url = params['deviceUrl']
     res = requests.post(device_url)
-    return res
+    return jsonify(res.json())
 
 @app.route('/user_login', methods=['POST'])
 def user_login():
