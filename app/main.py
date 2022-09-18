@@ -1,3 +1,4 @@
+from crypt import methods
 import os
 import cv2
 import base64
@@ -7,6 +8,9 @@ from io import BytesIO
 from PIL import Image
 from apply import predict_image
 from sql import query_exist_user_account, add_user_info, get_db, add_wx_login
+from sql import query_forgetpd_question, alter_user_paddword, query_device_url_openid
+from sql import query_device_url_account, add_devie_url, add_forgetpd_question
+
 from flask import Flask, jsonify, abort, Response, request
 
 app = Flask(__name__)
@@ -24,6 +28,58 @@ app = Flask(__name__)
 #     res = requests.post(device_url)
 #     return res
 
+@app.route('/get_exist_device_openid', methods=["POST"])
+def get_exist_device_openid():
+    db = get_db()
+    params = request.get_json()
+    openid = params['openid']
+    all_fetched = query_device_url_openid(db, openid)
+    result = {"deviceUrl":[], "deviceName":[]}
+    for _, _, device_url, device_name in all_fetched:
+         result['deviceUrl'].append(device_url)
+         result['deviceName'].append(device_name)
+    return jsonify(result)
+
+
+@app.route('/get_exist_device_account', methods=["POST"])
+def get_exist_device_account():
+    db = get_db()
+    params = request.get_json()
+    user_account = params['userAccount']
+    all_fetched = query_device_url_account(db, user_account)
+    result = {"deviceUrl":[], "deviceName":[]}
+    for _, _, device_url, device_name in all_fetched:
+         result['deviceUrl'].append(device_url)
+         result['deviceName'].append(device_name)
+    return jsonify(result)
+
+
+@app.route('/bind_device_openid', methods=["POST"])
+def bind_device_openid():
+    try:
+        db = get_db()
+        params = request.get_json()
+        device_url = params['deviceUrl']
+        openid = params['openid']
+        device_name = params['deviceName']
+        add_devie_url(db, device_url=device_url, account='', openid=openid, device_name=device_name)
+        return jsonify({"bind_success": True})
+    except:
+        return jsonify({"bind_success": False})
+
+
+@app.route('/bind_device_account', methods=["POST"])
+def bind_device_account():
+    try:
+        db = get_db()
+        params = request.get_json()
+        device_url = params['deviceUrl']
+        user_account = params['userAccount']
+        add_devie_url(db, device_url=device_url, account=user_account, openid='')
+        return jsonify({"bind_success":True})
+    except:
+        return jsonify({"bind_success": False})
+
 
 @app.route('/get_device_info', methods=["POST"])
 def get_device_info():
@@ -31,6 +87,49 @@ def get_device_info():
     device_url = params['deviceUrl']
     res = requests.post(device_url)
     return jsonify(res.json())
+
+
+@app.route('/add_user_full', methods=["POST"])
+def add_user_full():
+    try:
+        db = get_db()
+        params = request.get_json()
+        user_account = params['userAccount']
+        question1 = params['question1']
+        question2 = params['question2']
+        question3 = params['question3']
+        add_forgetpd_question(account=user_account, question1=question1, question2=question2, question3=question3)
+        return jsonify({"add_success": True})
+    except:
+        return jsonify({"add_success": False})
+        
+
+@app.route('/retrieve_password', methods=["POST"])
+def retrieve_password():
+    db = get_db()
+    params = request.get_json()
+    user_account = params['userAccount']
+    question1 = params['question1']
+    question2 = params['question2']
+    question3 = params['question3']
+    r_question1, r_question2, r_question3, _ = query_forgetpd_question(db, user_account)
+    if(question1 == r_question1 and question2 == r_question2 and question3 == r_question3):
+        return jsonify({"retrieve_success": True})
+    return jsonify({"retrieve_success": False})
+
+
+@app.route('/reset_password', methods=["POST"])
+def reset_password():
+    try:
+        db = get_db()
+        params = request.get_json()
+        user_account  = params['userAccount']
+        user_password = params['userPassword']
+        alter_user_paddword(db, user_account, user_password)
+        return jsonify({"reset_success":True})
+    except:
+        return jsonify({"reset_success":False})
+
 
 @app.route('/user_login', methods=['POST'])
 def user_login():
@@ -48,6 +147,7 @@ def user_login():
     else:
         return jsonify({"accountNotExist": False, "passwordError": True, "loginSuccess": False})
 
+
 @app.route('/user_registry', methods=['POST'])
 def user_registry():
     db = get_db()
@@ -64,11 +164,14 @@ def user_registry():
 
 @app.route('/wx_login', methods=['POST'])
 def wx_login():
-    db = get_db()
-    params = request.get_json()
-    openid = params['openid']
-    add_wx_login(db, openid)
-    return jsonify({"wxLoginSuccess":True})
+    try:
+        db = get_db()
+        params = request.get_json()
+        openid = params['openid']
+        add_wx_login(db, openid)
+        return jsonify({"wxLoginSuccess":True})
+    except:
+        return jsonify({"wxLoginSuccess":False})
 
 
 @app.route('/predict',  methods=['POST'])
