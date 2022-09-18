@@ -47,7 +47,7 @@ def get_openid():
     appsecret = "6710d1af63388058b583b9fd851a74c5"
     appid = "wx9b24604931afa738"
     url = f"https://api.weixin.qq.com/sns/jscode2session?appid={appid}&secret={appsecret}&js_code={code}&grant_type=authorization_code&connect_redirect=1"
-    res = requests.get(url=url)
+    res = requests.get(url=url, verify=False)
     return jsonify(res.json())
 
 @app.route('/get_exist_device_openid', methods=["POST"])
