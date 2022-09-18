@@ -27,6 +27,7 @@ app = Flask(__name__)
 #     device_url = params['deviceUrl']
 #     res = requests.post(device_url)
 #     return res
+
 @app.route('/unbind_device', methods=["POST"])
 def unbind_device():
     try:
@@ -42,13 +43,9 @@ def unbind_device():
 
 @app.route('/get_openid', methods=["POST"])
 def get_openid():
-    params = request.get_json()
-    code = params['code']
-    appsecret = "6710d1af63388058b583b9fd851a74c5"
-    appid = "wx9b24604931afa738"
-    url = f"https://api.weixin.qq.com/sns/jscode2session?appid={appid}&secret={appsecret}&js_code={code}&grant_type=authorization_code&connect_redirect=1"
-    res = requests.get(url=url, verify=False)
-    return jsonify(res.json())
+    openid = request.headers.get('X-WX-OPENID')
+    print(openid)
+    return jsonify({"openid":openid})
 
 @app.route('/get_exist_device_openid', methods=["POST"])
 def get_exist_device_openid():
