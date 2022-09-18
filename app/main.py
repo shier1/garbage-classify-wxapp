@@ -35,7 +35,7 @@ def unbind_device():
         params = request.get_json()
         user_account = params['userAccount']
         device_url = params['deviceUrl']
-        openid = params['openid']
+        openid = request.headers.get('X-WX-OPENID')
         delete_device_url(db=db, device_url=device_url, account=user_account, openid=openid)
     except:
         return jsonify({"unbind_success": False})
@@ -50,8 +50,7 @@ def get_openid():
 @app.route('/get_exist_device_openid', methods=["POST"])
 def get_exist_device_openid():
     db = get_db()
-    params = request.get_json()
-    openid = params['openid']
+    openid = request.headers.get('X-WX-OPENID')
     all_fetched = query_device_url_openid(db, openid)
     result = {"deviceUrl":[], "deviceName":[]}
     for _, _, device_url, device_name in all_fetched:
@@ -79,7 +78,7 @@ def bind_device_openid():
         db = get_db()
         params = request.get_json()
         device_url = params['deviceUrl']
-        openid = params['openid']
+        openid = request.headers.get('X-WX-OPENID')
         device_name = params['deviceName']
         add_devie_url(db, device_url=device_url, account='', openid=openid, device_name=device_name)
         return jsonify({"bind_success": True})
@@ -156,8 +155,6 @@ def user_login():
     params = request.get_json()
     user_account = params['userAccount']
     user_passwd = params['userPassword']
-    print(params)
-    print(db)
     exist_account = query_exist_user_account(db, account=user_account)
     if exist_account is None:
         return jsonify({"accountNotExist": True, "passwordError": False, "loginSuccess": False})
@@ -185,8 +182,7 @@ def user_registry():
 def wx_login():
     try:
         db = get_db()
-        params = request.get_json()
-        openid = params['openid']
+        openid = request.headers.get('X-WX-OPENID')
         add_wx_login(db, openid)
         return jsonify({"wxLoginSuccess":True})
     except:
