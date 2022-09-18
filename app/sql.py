@@ -53,6 +53,12 @@ def add_devie_url(db:pymysql.connections.Connection, device_url:str, account:str
             cursor.execute("insert into deviceInfo values (%s,%s,%s,%s)" (account, openid, device_url, device_name))
             db.commit()
 
+def delete_device_url(db:pymysql.connections.Connection, device_url:str, account:str, openid:str):
+    with db.cursor() as cursor:
+        cursor.execute("delete from deviceInfo where userAccount=%s and openid=%s and deviceUrl=%s" (account, openid, device_url))
+        db.commit()
+
+
 def query_forgetpd_question(db:pymysql.connections.Connection, account):
     with db.cursor() as cursor:
         cursor.execute("select * from forgetInfo where userAccount=%s", (account))

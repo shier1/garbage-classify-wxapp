@@ -1,4 +1,3 @@
-from crypt import methods
 import os
 import cv2
 import base64
@@ -10,6 +9,7 @@ from apply import predict_image
 from sql import query_exist_user_account, add_user_info, get_db, add_wx_login
 from sql import query_forgetpd_question, alter_user_paddword, query_device_url_openid
 from sql import query_device_url_account, add_devie_url, add_forgetpd_question
+from sql import delete_device_url
 
 from flask import Flask, jsonify, abort, Response, request
 
@@ -27,6 +27,28 @@ app = Flask(__name__)
 #     device_url = params['deviceUrl']
 #     res = requests.post(device_url)
 #     return res
+@app.route('/unbind_device', methods=["POST"])
+def unbind_device():
+    try:
+        db = get_db()
+        params = request.get_json()
+        user_account = params['userAccount']
+        device_url = params['deviceUrl']
+        openid = params['openid']
+        delete_device_url(db=db, device_url=device_url, account=user_account, openid=openid)
+    except:
+        return jsonify({"unbind_success": False})
+
+
+@app.route('/get_openid', methods=["POST"])
+def get_openid():
+    params = request.get_json()
+    code = params['code']
+    appsecret = "6710d1af63388058b583b9fd851a74c5"
+    appid = "wx9b24604931afa738"
+    url = f"https://api.weixin.qq.com/sns/jscode2session?appid={appid}&secret={appsecret}&js_code={code}&grant_type=authorization_code&connect_redirect=1"
+    res = requests.get(url=url)
+    return jsonify(res.json())
 
 @app.route('/get_exist_device_openid', methods=["POST"])
 def get_exist_device_openid():
