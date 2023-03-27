@@ -2,7 +2,7 @@ import pymysql
 
 def get_db():
     db = pymysql.connect(
-        host="10.0.224.15",
+        host="10.9.104.246",
         port=3306,
         user="shier",
         password="ZhouYanPing187419",
