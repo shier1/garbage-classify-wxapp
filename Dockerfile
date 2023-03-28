@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y ffmpeg libsm6 libxext6
 
 COPY ./app /app
 RUN python -m pip install opencv-python-headless
-RUN python -m pip install paddlepaddle==2.4.2 -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN python -m pip install paddlepaddle==2.4.2 -i https://mirror.baidu.com/pypi/simple
 RUN python -m pip install pymysql
 
 WORKDIR /app
