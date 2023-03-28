@@ -6,7 +6,7 @@ def get_db():
         port=3306,
         user="shier",
         password="ZhouYanPing187419",
-        database="garbage_classify"
+        database="flask_demo"
     )
     return db
 
